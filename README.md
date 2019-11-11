@@ -1,1 +1,0 @@
-# LA-Auto-Hackathon
