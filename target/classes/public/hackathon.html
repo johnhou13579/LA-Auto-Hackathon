@@ -9,7 +9,9 @@
     <div>
         <button onClick=quickSearch()> Press Me </button>
         <section id="results"> 
-            
+            <div id="queryResult"> 
+                <ol id="queryList" style="list-style-type:circle;"></ol>
+            </div>
         </section>
     </div>
 
@@ -23,7 +25,16 @@ function quickSearch() {
         })
         .done(function(data) {
             console.log(JSON.stringify(data));
-            document.getElementById("results").innerHTML = data;
+            document.getElementById('queryList').innerHTML = "";  
+        	var cleaned = JSON.stringify(data).replace(/}/g,'').replace(/]/g,'').replace(/{/g,'').replace(/\[/g,'').replace(/\\/g,'').replace(/"/g,' ').replace(/:/g,": ");
+        	var arr = cleaned.split(',');
+        	console.log(JSON.stringify(data));
+        	var i;
+        	for(i=0;i<arr.length;i++)
+        	{
+                $("#queryList").append(arr[i]+'<br>'); 	
+            }
+            
         })
         .fail(function(data) {
             console.log(JSON.stringify(data));
