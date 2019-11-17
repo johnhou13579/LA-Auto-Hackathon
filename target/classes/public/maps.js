@@ -26,7 +26,7 @@ function moveMapToHome(map){
   var defaultLayers = platform.createDefaultLayers();
   
   //Step 2: initialize a map - this map is centered over LA
-  var map = new H.Map(document.getElementById('map'),
+  var map = new H.Map(document.getElementById('mapContainer'),
     defaultLayers.vector.normal.map,{
     center: {lat:33.9771816, lng:-117.8754146},
     zoom: 4,

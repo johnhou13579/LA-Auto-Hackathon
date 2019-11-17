@@ -14,21 +14,55 @@
 
   <body id="markers-on-the-map">
       <button onClick="displayDirections()">click me</button>
-    <div class="page-header">
-        <h1>Map at a specified location</h1>
-        <p>Display a map at a specified location and zoom level</p>
-    </div>
-    <p>This example displays a movable map initially centered on the <b>Brandenburg Gate</b> in the centre of Berlin <i>(52.5159°N, 13.3777°E)</i></p>
-    <div id="map"></div>
-    <h3>Code</h3>
+    
+    <h3>Route</h3>
+            Starting: <input type="text" name="Starting" id = "starting">  <br>
+            Destination: <input type = "text" name = "Destination" id = "destination">
+            <button onClick="calculateRoute(); calculateRoute2();">Search</button>
+    
     <p>
         The <code>map.setCenter()</code> method and <code>map.setZoom() </code>method are able to control the location of the map.<br>
     </p>
     <div id="mapContainer"></div>
-    <script type="text/javascript" src='maps.js'></script>
     <script type="text/javascript" src='navigation.js'></script>
   </body>
   <script>
 
+
+      function calculateRoute(){
+          var starting = document.getElementById("starting").value;
+          starting.split(' ').join('+');
+          var key = 'AIzaSyBJaQsndPP7AUaV2_G3eYZnsN3Woiw7OCY';
+          var endpoint = 'https://maps.googleapis.com/maps/api/geocode/json?address='+starting+',+CA&key='+key;
+          $.ajax({
+            type: 'GET',
+            url: endpoint
+        })
+        .done(function(data) {
+            console.log(JSON.stringify(data.results[0].geometry.location));
+        })
+        .fail(function(data) {
+            console.log("Failed" + JSON.stringify(data));
+        });
+      }
+
+      function calculateRoute2(){
+          var ending = document.getElementById("destination").value;
+          ending.split(' ').join('+');
+          var key = 'AIzaSyBJaQsndPP7AUaV2_G3eYZnsN3Woiw7OCY';
+          console.log(ending);
+          var endpoint = 'https://maps.googleapis.com/maps/api/geocode/json?address='+ending+',+CA&key='+key;
+          console.log(endpoint);        
+          $.ajax({
+            type: 'GET',
+            url: endpoint
+        })
+        .done(function(data) {
+            console.log(JSON.stringify(data.results[0].geometry.location));
+        })
+        .fail(function(data) {
+            console.log("Failed" + JSON.stringify(data));
+        });
+      }
   </script>
 </html>
