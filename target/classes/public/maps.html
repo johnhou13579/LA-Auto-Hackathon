@@ -18,16 +18,21 @@
     <h3>Route</h3>
             Starting: <input type="text" name="Starting" id = "starting">  <br>
             Destination: <input type = "text" name = "Destination" id = "destination">
-            <button onClick="calculateRoute(); calculateRoute2();">Search</button>
+            <button onClick="calculateRoute()">Search</button>
+            <button onClick="clear()">Clear</button>
     
     <p>
         The <code>map.setCenter()</code> method and <code>map.setZoom() </code>method are able to control the location of the map.<br>
     </p>
     <div id="mapContainer"></div>
+    <script type="text/javascript" src='maps.js'></script>
     <script type="text/javascript" src='navigation.js'></script>
   </body>
   <script>
-
+      var startLat = 0;
+      var startLong = 0;
+      var endLat = 0;
+      var endLong = 0;
 
       function calculateRoute(){
           var starting = document.getElementById("starting").value;
@@ -39,10 +44,14 @@
             url: endpoint
         })
         .done(function(data) {
+            startLat = data.results[0].geometry.location.lat;
+            startLong = data.results[0].geometry.location.lng;
             console.log(JSON.stringify(data.results[0].geometry.location));
         })
         .fail(function(data) {
             console.log("Failed" + JSON.stringify(data));
+        }).always(function(data){
+            calculateRoute2();
         });
       }
 
@@ -50,19 +59,32 @@
           var ending = document.getElementById("destination").value;
           ending.split(' ').join('+');
           var key = 'AIzaSyBJaQsndPP7AUaV2_G3eYZnsN3Woiw7OCY';
-          console.log(ending);
           var endpoint = 'https://maps.googleapis.com/maps/api/geocode/json?address='+ending+',+CA&key='+key;
-          console.log(endpoint);        
           $.ajax({
             type: 'GET',
             url: endpoint
         })
         .done(function(data) {
+            endLat = data.results[0].geometry.location.lat;
+            endLong = data.results[0].geometry.location.lng;
             console.log(JSON.stringify(data.results[0].geometry.location));
+            
         })
         .fail(function(data) {
             console.log("Failed" + JSON.stringify(data));
+        }).always(function(data) {
+            plotpoints();
         });
       }
+      function plotpoints(){
+          plotRoute(startLat, startLong, endLat, endLong);
+          //N E S W
+          var twoMiles = .1;
+          var startRadius = [startLat+twoMiles, startLong+twoMiles, startLat-twoMiles, startLong-twoMiles];
+          var endRadius = [endLat+twoMiles, endLong+twoMiles, endLat-twoMiles, endLong-twoMiles];
+          
+          displayNearbyStations(startRadius, endRadius);
+      }
+
   </script>
 </html>
