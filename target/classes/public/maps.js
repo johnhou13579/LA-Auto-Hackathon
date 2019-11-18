@@ -24,13 +24,10 @@
   //Step 2: initialize a map - this map is centered over LA
 
   function printMarkers(myObj){
-    var count =0;
-
-    for(var i in myObj){
+    /* for(var i in myObj){
         addMarkersToMap(map, myObj[i].Latitude,myObj[i].Longitude);
         count++;
-    }
-    console.log(count);
+    } */
   }
 
   var myObj = [
@@ -95815,9 +95812,25 @@
   ];
 
   function displayDirections(){
-    printMarkers(myObj);
+    //printMarkers(myObj);
   }
 
   function displayNearbyStations(startRadius, endRadius){
-    
+    //N E S W
+    var count = 0;
+    for(var i in myObj){
+      if(myObj[i].Longitude <= startRadius[1] && myObj[i].Longitude >= startRadius[3]) {
+        if(myObj[i].Latitude <= startRadius[0] && myObj[i].Latitude >= startRadius[2]) {
+          addMarkersToMap(map, myObj[i].Latitude,myObj[i].Longitude);
+          count++;
+        }
+      }
+      else if(myObj[i].Longitude <= endRadius[1] && myObj[i].Longitude >= endRadius[3]) {
+        if(myObj[i].Latitude <= endRadius[0] && myObj[i].Latitude >= endRadius[2]) {
+          addMarkersToMap(map, myObj[i].Latitude,myObj[i].Longitude);
+          count++;
+        }
+      }
+    }
+    console.log(count);
   }
