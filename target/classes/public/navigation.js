@@ -44,6 +44,7 @@ function plotRoute(startLat, startLong, endLat, endLong){
         
         // Define a callback function to process the routing response:
         var onResult = function(result) {
+          console.log(result);
             var route,
             routeShape,
             startPoint,

@@ -1,8 +1,9 @@
 <html>
-  <head>
+
+<head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
-    
+
     <title>Map at a specified location</title>
     <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
     <link rel="stylesheet" type="text/css" href="./css/maps.css" />
@@ -11,80 +12,109 @@
     <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
     <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
     <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <script src="https://apis.google.com/js/api.js" type="text/javascript"></script>
 
-  <body id="markers-on-the-map">
-      <button onClick="displayDirections()">click me</button>
-    
+
+<body id="markers-on-the-map">
+    <button onClick="displayDirections()">click me</button>
+
     <h3>Route</h3>
-            Starting: <input type="text" name="Starting" id = "starting">  <br>
-            Destination: <input type = "text" name = "Destination" id = "destination">
-            <button onClick="calculateRoute()">Search</button>
-            <button onClick="clear()">Clear</button>
-    
+    Starting: <input type="text" name="Starting" id="starting"> <br>
+    Destination: <input type="text" name="Destination" id="destination">
+    <button onClick="calculateRoute()">Search</button>
+    <button onClick="clear()">Clear</button>
+
     <p>
-        The <code>map.setCenter()</code> method and <code>map.setZoom() </code>method are able to control the location of the map.<br>
+        The <code>map.setCenter()</code> method and <code>map.setZoom() </code>method are able to control the location
+        of the map.<br>
     </p>
     <div id="mapContainer"></div>
     <script type="text/javascript" src='maps.js'></script>
     <script type="text/javascript" src='navigation.js'></script>
-  </body>
-  <script>
-      var startLat = 0;
-      var startLong = 0;
-      var endLat = 0;
-      var endLong = 0;
+</body>
+<script>
+    var startLat = 0;
+    var startLong = 0;
+    var endLat = 0;
+    var endLong = 0;
+    var key = 'AIzaSyBJaQsndPP7AUaV2_G3eYZnsN3Woiw7OCY';
 
-      function calculateRoute(){
-          var starting = document.getElementById("starting").value;
-          starting.split(' ').join('+');
-          var key = 'AIzaSyBJaQsndPP7AUaV2_G3eYZnsN3Woiw7OCY';
-          var endpoint = 'https://maps.googleapis.com/maps/api/geocode/json?address='+starting+',+CA&key='+key;
-          $.ajax({
+    function googleMaps(){
+
+        //https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=40.6655101,-73.89188969999998&destinations=40.6905615%2C-73.9976592%7C40.6905615%2C-73.9976592%7C40.6905615%2C-73.9976592%7C40.6905615%2C-73.9976592%7C40.6905615%2C-73.9976592%7C40.6905615%2C-73.9976592%7C40.659569%2C-73.933783%7C40.729029%2C-73.851524%7C40.6860072%2C-73.6334271%7C40.598566%2C-73.7527626%7C40.659569%2C-73.933783%7C40.729029%2C-73.851524%7C40.6860072%2C-73.6334271%7C40.598566%2C-73.7527626&key=AIzaSyBJaQsndPP7AUaV2_G3eYZnsN3Woiw7OCY
+        var endpoint = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins='+startLat+','+startLong+'&destinations='+endLat+','+endLong+'&key='+key;
+        console.log(endpoint);
+
+        $.ajax({
+            type: 'GET',
+            url: endpoint,
+            contentType: 'application/json; charset=utf-8'
+            })
+            .done(function (data) {
+                console.log(JSON.stringify(data.rows[0].elements[0].duration.text + " " + data.rows[0].elements[0].distance.text));
+            })
+            .fail(function (data) {
+                console.log("Failed" + JSON.stringify(data));
+            })
+
+    }
+
+    function calculateRoute() {
+        var starting = document.getElementById("starting").value;
+        starting.split(' ').join('+');
+        var endpoint = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + starting + ',+CA&key=' + key;
+        $.ajax({
             type: 'GET',
             url: endpoint
         })
-        .done(function(data) {
-            startLat = data.results[0].geometry.location.lat;
-            startLong = data.results[0].geometry.location.lng;
-            console.log(JSON.stringify(data.results[0].geometry.location));
-        })
-        .fail(function(data) {
-            console.log("Failed" + JSON.stringify(data));
-        }).always(function(data){
-            calculateRoute2();
-        });
-      }
+            .done(function (data) {
+                startLat = data.results[0].geometry.location.lat;
+                startLong = data.results[0].geometry.location.lng;
+                console.log(JSON.stringify(data.results[0].geometry.location));
+            })
+            .fail(function (data) {
+                console.log("Failed" + JSON.stringify(data));
+            }).always(function (data) {
+                calculateRoute2();
+            });
+    }
 
-      function calculateRoute2(){
-          var ending = document.getElementById("destination").value;
-          ending.split(' ').join('+');
-          var key = 'AIzaSyBJaQsndPP7AUaV2_G3eYZnsN3Woiw7OCY';
-          var endpoint = 'https://maps.googleapis.com/maps/api/geocode/json?address='+ending+',+CA&key='+key;
-          $.ajax({
+    function calculateRoute2() {
+        var ending = document.getElementById("destination").value;
+        ending.split(' ').join('+');
+        var key = 'AIzaSyBJaQsndPP7AUaV2_G3eYZnsN3Woiw7OCY';
+        var endpoint = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + ending + ',+CA&key=' + key;
+        $.ajax({
             type: 'GET',
             url: endpoint
         })
-        .done(function(data) {
-            endLat = data.results[0].geometry.location.lat;
-            endLong = data.results[0].geometry.location.lng;
-            console.log(JSON.stringify(data.results[0].geometry.location));
-            
-        })
-        .fail(function(data) {
-            console.log("Failed" + JSON.stringify(data));
-        }).always(function(data) {
-            plotpoints();
-        });
-      }
-      function plotpoints(){
-          plotRoute(startLat, startLong, endLat, endLong);
-          //N E S W
-          var twoMiles = .05;
-          var startRadius = [startLat+twoMiles, startLong+twoMiles, startLat-twoMiles, startLong-twoMiles];
-          var endRadius = [endLat+twoMiles, endLong+twoMiles, endLat-twoMiles, endLong-twoMiles];
-          
-          displayNearbyStations(startRadius, endRadius);
-      }
+            .done(function (data) {
+                endLat = data.results[0].geometry.location.lat;
+                endLong = data.results[0].geometry.location.lng;
+                console.log(JSON.stringify(data.results[0].geometry.location));
 
-  </script>
+            })
+            .fail(function (data) {
+                console.log("Failed" + JSON.stringify(data));
+            }).always(function (data) {
+                plotpoints();
+                googleMaps();
+            });
+    }
+    function plotpoints() {
+        plotRoute(startLat, startLong, endLat, endLong);
+        //N E S W
+        var twoMiles = .01;
+        var startRadius = [startLat + twoMiles, startLong + twoMiles, startLat - twoMiles, startLong - twoMiles];
+        var endRadius = [endLat + twoMiles, endLong + twoMiles, endLat - twoMiles, endLong - twoMiles];
+
+        //display Nearby Stations for Start and Ending coords
+        displayNearbyStations(startRadius, endRadius);
+
+        //calculate the number of fuel refills necessary
+
+    }
+
+</script>
+
 </html>
