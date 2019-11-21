@@ -59,6 +59,7 @@
 
     }
 
+    //Calculates and sets the Latitude and Longitude of the Origin Location
     function calculateRoute() {
         var starting = document.getElementById("starting").value;
         starting.split(' ').join('+');
@@ -79,6 +80,7 @@
             });
     }
 
+    //Calculates and sets the Latitude and Longitude of the Destination Location
     function calculateRoute2() {
         var ending = document.getElementById("destination").value;
         ending.split(' ').join('+');
@@ -101,6 +103,8 @@
                 googleMaps();
             });
     }
+
+    //Calculates the radius of the Origin and Destination. Passes those values into a method that displays nearby charging stations.
     function plotpoints() {
         plotRoute(startLat, startLong, endLat, endLong);
         //N E S W
